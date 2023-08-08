@@ -169,11 +169,11 @@ object GemminiConfigs {
     spatialArrayOutputType = DummySInt(20),
     tileRows     = defaultConfig.tileRows,
     tileColumns  = defaultConfig.tileColumns,
-    meshRows     = defaultConfig.meshRows,
-    meshColumns  = defaultConfig.meshColumns,
-    dataflow     = defaultConfig.dataflow,
-    sp_capacity  = defaultConfig.sp_capacity,
-    acc_capacity = defaultConfig.acc_capacity,
+    meshRows     = 128, // defaultConfig.meshRows,
+    meshColumns  = 128, // defaultConfig.meshColumns,
+    dataflow     = Dataflow.WS, // defaultConfig.dataflow,
+    sp_capacity  = CapacityInKilobytes(4096), // defaultConfig.sp_capacity,
+    acc_capacity = CapacityInKilobytes(4096), // defaultConfig.acc_capacity,
     sp_banks     = defaultConfig.sp_banks,
     acc_banks    = defaultConfig.acc_banks,
     sp_singleported = defaultConfig.sp_singleported,
@@ -220,6 +220,13 @@ object GemminiConfigs {
     ex_write_to_acc = defaultConfig.ex_write_to_acc,
   )
 
+  val dummy2Config = dummyConfig.copy(meshRows=2, meshColumns=2)
+  val dummy4Config = dummyConfig.copy(meshRows=4, meshColumns=4)
+  val dummy8Config = dummyConfig.copy(meshRows=8, meshColumns=8)
+  val dummy16Config = dummyConfig.copy(meshRows=16, meshColumns=16)
+  val dummy32Config = dummyConfig.copy(meshRows=32, meshColumns=32)
+  val dummy64Config = dummyConfig.copy(meshRows=64, meshColumns=64)
+
   val chipConfig = defaultConfig.copy(sp_capacity=CapacityInKilobytes(64), acc_capacity=CapacityInKilobytes(32), dataflow=Dataflow.WS,
     acc_scale_args=Some(defaultConfig.acc_scale_args.get.copy(latency=4)),
     acc_singleported=true,
@@ -255,6 +262,84 @@ class DefaultGemminiConfig[T <: Data : Arithmetic, U <: Data, V <: Data](
   )
 })
 
+class DummyGemminiConfig[T <: Data : Arithmetic, U <: Data, V <: Data](
+  gemminiConfig: GemminiArrayConfig[T,U,V] = GemminiConfigs.dummyConfig
+) extends Config((site, here, up) => {
+  case BuildRoCC => up(BuildRoCC) ++ Seq(
+    (p: Parameters) => {
+      implicit val q = p
+      val gemmini = LazyModule(new Gemmini(gemminiConfig))
+      gemmini
+    }
+  )
+})
+
+class Dummy2GemminiConfig[T <: Data : Arithmetic, U <: Data, V <: Data](
+  gemminiConfig: GemminiArrayConfig[T,U,V] = GemminiConfigs.dummy2Config
+) extends Config((site, here, up) => {
+  case BuildRoCC => up(BuildRoCC) ++ Seq(
+    (p: Parameters) => {
+      implicit val q = p
+      val gemmini = LazyModule(new Gemmini(gemminiConfig))
+      gemmini
+    }
+  )
+})
+class Dummy4GemminiConfig[T <: Data : Arithmetic, U <: Data, V <: Data](
+  gemminiConfig: GemminiArrayConfig[T,U,V] = GemminiConfigs.dummy4Config
+) extends Config((site, here, up) => {
+  case BuildRoCC => up(BuildRoCC) ++ Seq(
+    (p: Parameters) => {
+      implicit val q = p
+      val gemmini = LazyModule(new Gemmini(gemminiConfig))
+      gemmini
+    }
+  )
+})
+class Dummy8GemminiConfig[T <: Data : Arithmetic, U <: Data, V <: Data](
+  gemminiConfig: GemminiArrayConfig[T,U,V] = GemminiConfigs.dummy8Config
+) extends Config((site, here, up) => {
+  case BuildRoCC => up(BuildRoCC) ++ Seq(
+    (p: Parameters) => {
+      implicit val q = p
+      val gemmini = LazyModule(new Gemmini(gemminiConfig))
+      gemmini
+    }
+  )
+})
+class Dummy16GemminiConfig[T <: Data : Arithmetic, U <: Data, V <: Data](
+  gemminiConfig: GemminiArrayConfig[T,U,V] = GemminiConfigs.dummy16Config
+) extends Config((site, here, up) => {
+  case BuildRoCC => up(BuildRoCC) ++ Seq(
+    (p: Parameters) => {
+      implicit val q = p
+      val gemmini = LazyModule(new Gemmini(gemminiConfig))
+      gemmini
+    }
+  )
+})
+class Dummy32GemminiConfig[T <: Data : Arithmetic, U <: Data, V <: Data](
+  gemminiConfig: GemminiArrayConfig[T,U,V] = GemminiConfigs.dummy32Config
+) extends Config((site, here, up) => {
+  case BuildRoCC => up(BuildRoCC) ++ Seq(
+    (p: Parameters) => {
+      implicit val q = p
+      val gemmini = LazyModule(new Gemmini(gemminiConfig))
+      gemmini
+    }
+  )
+})
+class Dummy64GemminiConfig[T <: Data : Arithmetic, U <: Data, V <: Data](
+  gemminiConfig: GemminiArrayConfig[T,U,V] = GemminiConfigs.dummy64Config
+) extends Config((site, here, up) => {
+  case BuildRoCC => up(BuildRoCC) ++ Seq(
+    (p: Parameters) => {
+      implicit val q = p
+      val gemmini = LazyModule(new Gemmini(gemminiConfig))
+      gemmini
+    }
+  )
+})
 /**
  * Mixin which sets the default lean parameters for a systolic array accelerator.
  */
